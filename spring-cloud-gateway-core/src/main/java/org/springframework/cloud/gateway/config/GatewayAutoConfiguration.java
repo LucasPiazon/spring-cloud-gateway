@@ -159,6 +159,7 @@ public class GatewayAutoConfiguration {
 		}
 
 		@Bean
+		//初始化一个netty实现的httpclient
 		public Consumer<? super HttpClientOptions.Builder> nettyClientOptions(HttpClientProperties properties) {
 			return opts -> {
 
@@ -166,7 +167,7 @@ public class GatewayAutoConfiguration {
 					opts.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, properties.getConnectTimeout());
 				}
 
-				// configure ssl
+				// configure ssl，信任所有证书
 				HttpClientProperties.Ssl ssl = properties.getSsl();
 				opts.sslHandshakeTimeoutMillis(ssl.getHandshakeTimeoutMillis());
 				opts.sslCloseNotifyFlushTimeoutMillis(ssl.getCloseNotifyFlushTimeoutMillis());
@@ -185,7 +186,7 @@ public class GatewayAutoConfiguration {
 					});
 				}
 
-				// configure pool resources
+				// configure pool resources，配置连接池
 				HttpClientProperties.Pool pool = properties.getPool();
 
 				if (pool.getType() == DISABLED) {
@@ -200,7 +201,7 @@ public class GatewayAutoConfiguration {
 				}
 
 
-				// configure proxy if proxy host is set.
+				// configure proxy if proxy host is set.，配置http代理
 				HttpClientProperties.Proxy proxy = properties.getProxy();
 				if (StringUtils.hasText(proxy.getHost())) {
 					opts.proxy(typeSpec -> {
